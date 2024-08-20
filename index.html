@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Philippine Peso Bill Splitter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.5rem;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #result {
+            margin-top: 1rem;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Philippine Peso Bill Splitter</h1>
+        <div class="form-group">
+            <label for="billAmount">Bill Amount (₱):</label>
+            <input type="number" id="billAmount" step="0.01" required>
+        </div>
+        <div class="form-group">
+            <label for="numPeople">Number of People:</label>
+            <input type="number" id="numPeople" required>
+        </div>
+        <div class="form-group">
+            <label for="serviceCharge">Service Charge (₱):</label>
+            <input type="number" id="serviceCharge" step="0.01">
+        </div>
+        <button onclick="calculateSplit()">Calculate</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function calculateSplit() {
+            const billAmount = document.getElementById('billAmount').value;
+            const numPeople = document.getElementById('numPeople').value;
+            const serviceCharge = document.getElementById('serviceCharge').value;
+
+            fetch('/calculate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    billAmount: billAmount,
+                    numPeople: numPeople,
+                    serviceCharge: serviceCharge
+                }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('result').innerHTML = `Each person pays: ₱${data.amountPerPerson.toFixed(2)}`;
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    document.getElementById('result').innerHTML = 'An error occurred. Please try again.';
+                });
+        }
+    </script>
+</body>
+
+</html>
